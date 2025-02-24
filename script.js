@@ -13,6 +13,8 @@ function Gameboard() {
 
   const getBoard = () => board;
 
+  const getMarker = (x, y) => getBoard()[x][y].getValue()
+
   const setMarker = (x, y, playerCode) => {
     getBoard()[x][y].setValue(playerCode);
   }
@@ -29,13 +31,14 @@ function Gameboard() {
 
   return {
     getBoard,
+    getMarker,
     setMarker,
     printBoard,
   }
 }
 
 function Cell() {
-  let value = 0;   // 0: Empty, 1: You, 2: Opponent
+  let value = 0;    // 0: Empty, 1: You, 2: Opponent
 
   const getValue = () => value;
   const setValue = (playerCode) => {
@@ -49,26 +52,42 @@ function Cell() {
 }
 
 function GameController() {
+  const gameboard = Gameboard();
   const playerOne = 'You';
   const playerTwo = 'Opponent';
-  let turn = 1;   // 1: Player One, 2: Player Two
+  
+  let turn = 1;     // 1: Player One, 2: Player Two
+
+  const playRound = (x, y) => {
+    if (gameboard.getMarker(x, y) > 0) {
+      console.log("Choose another one")
+      return;
+    }
+    gameboard.setMarker(x, y, getTurn());
+    setNextTurn();
+  }
 
   const getTurn = () => turn;
 
   const setNextTurn = () => turn = (turn === 1) ? 2 : 1;
 
+  // TODO: Add winner function
+  const checkWinner = () => {
+
+  }
+
   return {
     getTurn,
     setNextTurn,
+    gameboard,
+    playRound,
   }
 }
 
-const gameController = GameController();
-const gameboard = Gameboard();
-gameboard.setMarker(0, 0, gameController.getTurn());
-gameController.setNextTurn();
-gameboard.setMarker(1, 1, gameController.getTurn());
-gameController.setNextTurn();
-gameboard.setMarker(2, 0, gameController.getTurn());
+const game = GameController();
+game.playRound(0, 0);
+game.playRound(1, 1);
+game.playRound(2, 0);
+game.playRound(2, 0);
 
-gameboard.printBoard();
+game.gameboard.printBoard();
