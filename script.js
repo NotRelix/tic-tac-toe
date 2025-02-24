@@ -3,16 +3,7 @@ function Gameboard() {
   const rowCount = 3;
   const colCount = 3;
 
-  const gameboard = [
-    {
-      player: 'You',
-    },
-    {
-      player: 'Opponent',
-    },
-  ];
-
-  for (let x = 0; x < colCount; x++) {
+  for (let x = 0; x < rowCount; x++) {
     const rowCells = [];
     for (let y = 0; y < rowCount; y++) {
       rowCells.push(Cell());
@@ -22,9 +13,24 @@ function Gameboard() {
 
   const getBoard = () => board;
 
+  const setMarker = (x, y, playerCode) => {
+    getBoard()[x][y].setValue(playerCode);
+  }
+
+  const printBoard = () => {
+    for (let x = 0; x < rowCount; x++) {
+      const rowCells = [];
+      for (let y = 0; y < colCount; y++) {
+        rowCells.push(board[x][y].getValue());
+      }
+      console.log(rowCells);
+    }
+  }
+
   return {
-    gameboard,
     getBoard,
+    setMarker,
+    printBoard,
   }
 }
 
@@ -42,7 +48,27 @@ function Cell() {
   }
 }
 
+function GameController() {
+  const playerOne = 'You';
+  const playerTwo = 'Opponent';
+  let turn = 1;   // 1: Player One, 2: Player Two
+
+  const getTurn = () => turn;
+
+  const setNextTurn = () => turn = (turn === 1) ? 2 : 1;
+
+  return {
+    getTurn,
+    setNextTurn,
+  }
+}
+
+const gameController = GameController();
 const gameboard = Gameboard();
-gameboard.getBoard()[1][0].setValue(1);
-console.log(gameboard.getBoard()[1][0].getValue());
-console.log(gameboard.getBoard());
+gameboard.setMarker(0, 0, gameController.getTurn());
+gameController.setNextTurn();
+gameboard.setMarker(1, 1, gameController.getTurn());
+gameController.setNextTurn();
+gameboard.setMarker(2, 0, gameController.getTurn());
+
+gameboard.printBoard();
