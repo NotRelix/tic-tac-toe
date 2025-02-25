@@ -196,4 +196,25 @@ function GameRules(gameboard, getTurn) {
   }
 }
 
-const game = GameController();
+function ScreenController() {
+  const game = GameController();
+
+  const displayGrid = () => {
+    const gridContainer = document.querySelector('.grid-container');
+    console.log('sdfsd');
+    for (let x = 0; x < 3; x++) {
+      for (let y = 0; y < 3; y++) {
+        const gridCell = document.createElement('div');
+        gridCell.classList.add('cell');
+        gridContainer.appendChild(gridCell);
+      }
+    }
+  }
+  
+  return {
+    displayGrid,
+  }
+}
+
+const screen = ScreenController();
+screen.displayGrid();

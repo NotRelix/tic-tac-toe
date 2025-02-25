@@ -3,3 +3,22 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  width: 500px;
+  height: 500px;
+}
+
+.cell {
+  background-color: gray;
+  border: 1px solid black;
+}
