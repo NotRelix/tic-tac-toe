@@ -1,14 +1,16 @@
 function Gameboard() {
-  const board = [];
+  let board = [];
   const rowCount = 3;
   const colCount = 3;
-
-  for (let x = 0; x < rowCount; x++) {
-    const rowCells = [];
-    for (let y = 0; y < rowCount; y++) {
-      rowCells.push(Cell());
+  
+  const generateBoard = () => {
+    for (let x = 0; x < rowCount; x++) {
+      const rowCells = [];
+      for (let y = 0; y < rowCount; y++) {
+        rowCells.push(Cell());
+      }
+      board[x] = rowCells;
     }
-    board.push(rowCells);
   }
 
   const getBoard = () => board;
@@ -18,6 +20,8 @@ function Gameboard() {
   const setMarker = (x, y, playerCode) => {
     getBoard()[x][y].setValue(playerCode);
   }
+
+  const resetBoard = () => generateBoard();
 
   const printBoard = () => {
     for (let x = 0; x < rowCount; x++) {
@@ -30,9 +34,11 @@ function Gameboard() {
   }
 
   return {
+    generateBoard,
     getBoard,
     getMarker,
     setMarker,
+    resetBoard,
     printBoard,
   }
 }
@@ -54,14 +60,17 @@ function Cell() {
 
 function GameController() {
   const gameboard = Gameboard();
-  const playerOne = 'You';
-  const playerTwo = 'Opponent';
+  gameboard.generateBoard();
 
   let turn = 1;     // 1: Player One, 2: Player Two
+  let isGameFinished = 0;
 
   const playRound = (x, y) => {
-    const isWinner = checkWinner();
 
+    if (isGameFinished) {
+      console.log(`Please start a new game`);
+      return;
+    }
     
     if (gameboard.getMarker(x, y) > 0) {
       console.log("Choose another one")
@@ -69,16 +78,18 @@ function GameController() {
     }
     
     gameboard.setMarker(x, y, getTurn());
-
-    if (isWinner) {
+    
+    hasWinner = checkWinner();
+    if (hasWinner) {
       console.log(`Player ${getTurn()} Won the game!`);
+      finishGame();
       return;
     }
-    
-    // TODO: Check if the board is full.
+
     const isDraw = checkDraw();
     if (isDraw) {
       console.log(`Tie! It's a Draw!`);
+      finishGame();
       return;
     }
     
@@ -89,14 +100,13 @@ function GameController() {
 
   const setNextTurn = () => turn = (turn === 1) ? 2 : 1;
 
-  // TODO: Refactor this in the future
+  const finishGame = () => isGameFinished = 1;
+
   const checkWinner = () => {
     let isWinner = false;
     const horizontal = horizontalCheck();
     const vertical = verticalCheck();
     const diagonal = diagonalCheck();
-
-    console.log(horizontal, vertical, diagonal);
     
     if (horizontal === 3 || vertical === 3 || diagonal === 3) {
       isWinner = true;
@@ -134,12 +144,12 @@ function GameController() {
   }
 
   const diagonalCheck = () => {
-    if (gameboard.getMarker(0, 0) === getTurn() &&
+    if ((gameboard.getMarker(0, 0) === getTurn() &&
       gameboard.getMarker(1, 1) === getTurn() &&
-      gameboard.getMarker(2, 2) === getTurn() ||
-      gameboard.getMarker(0, 2) === getTurn() &&
-      gameboard.getMarker(1, 1) == getTurn() &&
-      gameboard.getMarker(2, 0) == getTurn()) {
+      gameboard.getMarker(2, 2) === getTurn()) ||
+      (gameboard.getMarker(0, 2) === getTurn() &&
+      gameboard.getMarker(1, 1) === getTurn() &&
+      gameboard.getMarker(2, 0) == getTurn())) {
       return 3;
     }
     return 0;
@@ -156,22 +166,17 @@ function GameController() {
     return 1;
   }
 
+  const resetGame = () => {
+    turn = 1;
+    isGameFinished = 0;
+    gameboard.resetBoard();
+  }
+
   return {
-    getTurn,
-    setNextTurn,
     gameboard,
     playRound,
+    resetGame,
   }
 }
 
 const game = GameController();
-game.playRound(0, 0);
-game.playRound(0, 1);
-game.playRound(0, 2);
-game.playRound(1, 0);
-game.playRound(2, 1);
-game.playRound(1, 1);
-game.playRound(1, 2);
-game.playRound(2, 0);
-game.playRound(2, 2);
-game.gameboard.printBoard();
