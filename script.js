@@ -60,19 +60,28 @@ function GameController() {
   let turn = 1;     // 1: Player One, 2: Player Two
 
   const playRound = (x, y) => {
+    const isWinner = checkWinner();
+
+    
     if (gameboard.getMarker(x, y) > 0) {
       console.log("Choose another one")
       return;
     }
-
+    
     gameboard.setMarker(x, y, getTurn());
-    const isWinner = checkWinner();
 
     if (isWinner) {
       console.log(`Player ${getTurn()} Won the game!`);
       return;
     }
-
+    
+    // TODO: Check if the board is full.
+    const isDraw = checkDraw();
+    if (isDraw) {
+      console.log(`Tie! It's a Draw!`);
+      return;
+    }
+    
     setNextTurn();
   }
 
@@ -80,6 +89,7 @@ function GameController() {
 
   const setNextTurn = () => turn = (turn === 1) ? 2 : 1;
 
+  // TODO: Refactor this in the future
   const checkWinner = () => {
     let isWinner = false;
     const horizontal = horizontalCheck();
@@ -135,6 +145,17 @@ function GameController() {
     return 0;
   }
 
+  const checkDraw = () => {
+    for (let x = 0; x < 3; x++) {
+      for (let y = 0; y < 3; y++) {
+        if (gameboard.getMarker(x, y) === 0) {
+          return 0;
+        }
+      }
+    }
+    return 1;
+  }
+
   return {
     getTurn,
     setNextTurn,
@@ -144,4 +165,13 @@ function GameController() {
 }
 
 const game = GameController();
+game.playRound(0, 0);
+game.playRound(0, 1);
+game.playRound(0, 2);
+game.playRound(1, 0);
+game.playRound(2, 1);
+game.playRound(1, 1);
+game.playRound(1, 2);
+game.playRound(2, 0);
+game.playRound(2, 2);
 game.gameboard.printBoard();
