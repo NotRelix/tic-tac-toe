@@ -36,7 +36,6 @@ function Gameboard() {
       for (let y = 0; y < colCount; y++) {
         rowCells.push(board[x][y].getValue());
       }
-      console.log(rowCells);
     }
   }
 
