@@ -30,22 +30,12 @@ function Gameboard() {
     generateBoard();
   }
 
-  const printBoard = () => {
-    for (let x = 0; x < rowCount; x++) {
-      const rowCells = [];
-      for (let y = 0; y < colCount; y++) {
-        rowCells.push(board[x][y].getValue());
-      }
-    }
-  }
-
   return {
     generateBoard,
     getBoard,
     getMarker,
     setMarker,
     resetBoard,
-    printBoard,
   }
 }
 
@@ -106,7 +96,7 @@ function GameController() {
       finishGame();
       return;
     }
-    gameboard.printBoard();
+
     setNextTurn();
   }
 
@@ -214,8 +204,8 @@ function ScreenController() {
     return gridCell;
   }
 
+  const gridContainer = document.querySelector('.grid-container');
   const displayGrid = () => {
-    const gridContainer = document.querySelector('.grid-container');
     for (let x = 0; x < 3; x++) {
       for (let y = 0; y < 3; y++) {
         const gridCell = createCell(x, y);
@@ -224,8 +214,18 @@ function ScreenController() {
     }
   }
   
+  const handleResetClick = () => {
+    game.resetGame();
+    gridContainer.innerHTML = '';
+    displayGrid();
+  }
+
+  const resetBtn = document.querySelector('.reset');
+  resetBtn.addEventListener('click', handleResetClick)
+  
   return {
     displayGrid,
+    game,
   }
 }
 
