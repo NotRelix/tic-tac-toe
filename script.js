@@ -56,18 +56,18 @@ function Cell() {
 
 function GameController() {
   const gameboard = Gameboard();
-  
+
   gameboard.generateBoard();
-  
+
   let turn = 1;     // 1: Player One, 2: Player Two
   let isGameFinished = 0;
-  
+
   const getTurn = () => turn;
-  
+
   const setNextTurn = () => turn = (turn === 1) ? 2 : 1;
-  
+
   const rules = GameRules(gameboard, getTurn);
-  
+
   const playRound = (x, y, e) => {
 
     if (isGameFinished) {
@@ -86,6 +86,7 @@ function GameController() {
     const hasWinner = rules.checkWinner();
     if (hasWinner) {
       console.log(`Player ${getTurn()} Won the game!`);
+      screen.highlightWinningCells(hasWinner);
       finishGame();
       return;
     }
@@ -117,16 +118,23 @@ function GameController() {
 
 function GameRules(gameboard, getTurn) {
   const lineCheckLoop = (isHorizontal) => {
-    let mostConsecutive = 0;
+    let mostConsecutive = [];
     for (let x = 0; x < 3; x++) {
-      let numberCount = 0;
+      let consecutive = [];
       for (let y = 0; y < 3; y++) {
-        const marker = (isHorizontal) ? gameboard.getMarker(x, y) : gameboard.getMarker(y, x);
+        const marker = (isHorizontal)
+          ? gameboard.getMarker(x, y)
+          : gameboard.getMarker(y, x);
+
         if (marker === getTurn()) {
-          numberCount++;
+          (isHorizontal) 
+          ? consecutive.push([y, x])
+          : consecutive.push([x, y]);
         }
       }
-      mostConsecutive = Math.max(mostConsecutive, numberCount);
+      mostConsecutive = (mostConsecutive.length > consecutive.length)
+        ? mostConsecutive
+        : consecutive;
     }
     return mostConsecutive;
   }
@@ -135,22 +143,36 @@ function GameRules(gameboard, getTurn) {
     let mostConsecutive = lineCheckLoop(true);
     return mostConsecutive;
   }
-  
+
   const verticalCheck = () => {
     let mostConsecutive = lineCheckLoop(false)
     return mostConsecutive;
   }
-  
+
   const diagonalCheck = () => {
-    if ((gameboard.getMarker(0, 0) === getTurn() &&
+    let diagonalWin = [];
+
+    if (gameboard.getMarker(0, 0) === getTurn() &&
       gameboard.getMarker(1, 1) === getTurn() &&
-      gameboard.getMarker(2, 2) === getTurn()) ||
-      (gameboard.getMarker(0, 2) === getTurn() &&
-        gameboard.getMarker(1, 1) === getTurn() &&
-        gameboard.getMarker(2, 0) === getTurn())) {
-      return 3;
+      gameboard.getMarker(2, 2) === getTurn()) {
+      diagonalWin = [
+        [0, 0],
+        [1, 1],
+        [2, 2],
+      ]
     }
-    return 0;
+
+    if (gameboard.getMarker(0, 2) === getTurn() &&
+      gameboard.getMarker(1, 1) === getTurn() &&
+      gameboard.getMarker(2, 0) === getTurn()) {
+      diagonalWin = [
+        [0, 2],
+        [1, 1],
+        [2, 0],
+      ]
+    }
+
+    return diagonalWin;
   }
 
   const checkWinner = () => {
@@ -159,8 +181,16 @@ function GameRules(gameboard, getTurn) {
     const vertical = verticalCheck();
     const diagonal = diagonalCheck();
 
-    if (horizontal === 3 || vertical === 3 || diagonal === 3) {
-      isWinner = 1;
+    if (horizontal.length === 3) {
+      isWinner = horizontal
+    }
+
+    if (vertical.length === 3) {
+      isWinner = vertical;
+    }
+
+    if (diagonal.length === 3) {
+      isWinner = diagonal;
     }
 
     return isWinner;
@@ -213,19 +243,29 @@ function ScreenController() {
       }
     }
   }
-  
+
   const handleResetClick = () => {
     game.resetGame();
     gridContainer.innerHTML = '';
     displayGrid();
   }
 
+  const highlightWinningCells = (winner) => {
+    winner.map(cell => {
+      const col = cell[0];
+      const row = cell[1];
+      const cellInGrid = document.querySelector(`[data-column="${col}"][data-row="${row}"]`);
+      cellInGrid.classList.add('winning-cell');
+    })
+  }
+
   const resetBtn = document.querySelector('.reset');
   resetBtn.addEventListener('click', handleResetClick)
-  
+
   return {
     displayGrid,
     game,
+    highlightWinningCells,
   }
 }
 
