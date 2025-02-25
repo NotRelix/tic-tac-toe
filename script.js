@@ -79,7 +79,7 @@ function GameController() {
   
   const rules = GameRules(gameboard, getTurn);
   
-  const playRound = (x, y) => {
+  const playRound = (x, y, e) => {
 
     if (isGameFinished) {
       console.log(`Please start a new game`);
@@ -92,6 +92,7 @@ function GameController() {
     }
 
     gameboard.setMarker(x, y, getTurn());
+    e.target.textContent = (turn === 1) ? 'O' : 'X';
 
     const hasWinner = rules.checkWinner();
     if (hasWinner) {
@@ -106,7 +107,7 @@ function GameController() {
       finishGame();
       return;
     }
-
+    gameboard.printBoard();
     setNextTurn();
   }
 
@@ -199,13 +200,26 @@ function GameRules(gameboard, getTurn) {
 function ScreenController() {
   const game = GameController();
 
+  const handleCellPress = (e) => {
+    const col = e.target.dataset.column;
+    const row = e.target.dataset.row;
+    game.playRound(row, col, e);
+  }
+
+  const createCell = (row, col) => {
+    const gridCell = document.createElement('div');
+    gridCell.classList.add('cell');
+    gridCell.dataset.column = col;
+    gridCell.dataset.row = row;
+    gridCell.addEventListener('click', handleCellPress);
+    return gridCell;
+  }
+
   const displayGrid = () => {
     const gridContainer = document.querySelector('.grid-container');
-    console.log('sdfsd');
     for (let x = 0; x < 3; x++) {
       for (let y = 0; y < 3; y++) {
-        const gridCell = document.createElement('div');
-        gridCell.classList.add('cell');
+        const gridCell = createCell(x, y);
         gridContainer.appendChild(gridCell);
       }
     }
