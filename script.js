@@ -80,9 +80,10 @@ function GameController() {
       return;
     }
 
+    screen.changeTurnMark();
     gameboard.setMarker(x, y, getTurn());
     e.target.textContent = (turn === 1) ? 'O' : 'X';
-
+    
     const hasWinner = rules.checkWinner();
     if (hasWinner) {
       console.log(`Player ${getTurn()} Won the game!`);
@@ -97,7 +98,7 @@ function GameController() {
       finishGame();
       return;
     }
-
+    
     setNextTurn();
   }
 
@@ -113,6 +114,8 @@ function GameController() {
     gameboard,
     playRound,
     resetGame,
+    getTurn,
+    setNextTurn,
   }
 }
 
@@ -245,6 +248,8 @@ function ScreenController() {
   }
 
   const handleResetClick = () => {
+    const turn = document.querySelector('.turn');
+    turn.textContent = 'O';
     game.resetGame();
     gridContainer.innerHTML = '';
     displayGrid();
@@ -259,6 +264,11 @@ function ScreenController() {
     })
   }
 
+  const changeTurnMark = () => {
+    const turn = document.querySelector('.turn');
+    turn.textContent = (game.getTurn() === 1) ? 'X': 'O';
+  }
+
   const resetBtn = document.querySelector('.reset');
   resetBtn.addEventListener('click', handleResetClick)
 
@@ -266,6 +276,7 @@ function ScreenController() {
     displayGrid,
     game,
     highlightWinningCells,
+    changeTurnMark,
   }
 }
 
