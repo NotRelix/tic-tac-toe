@@ -104,3 +104,21 @@ header {
 .winning-cell:hover {
   background-color: rgb(0, 148, 0);
 }
+
+.player-one-draw {
+  background-color: orange;
+  transition: 100ms ease-in-out;
+}
+
+.player-one-draw:hover {
+  background-color: rgb(255, 184, 53);
+}
+
+.player-two-draw {
+  background-color: rgb(253, 182, 51);
+  transition: 100ms ease-in-out;
+}
+
+.player-two-draw:hover {
+  background-color: rgb(255, 192, 75);
+}

@@ -95,6 +95,7 @@ function GameController() {
     const isDraw = rules.checkDraw();
     if (isDraw) {
       console.log(`Tie! It's a Draw!`);
+      screen.highlightOnDraw();
       finishGame();
       return;
     }
@@ -264,6 +265,18 @@ function ScreenController() {
     })
   }
 
+  const highlightOnDraw = () => {
+    const cells = document.querySelectorAll('.cell');
+    cells.forEach(cell => {
+      const cellMark = cell.textContent;
+      if (cellMark === 'O') {
+        cell.classList.add('player-one-draw');
+      } else {
+        cell.classList.add('player-two-draw');
+      }
+    })
+  }
+
   const changeTurnMark = () => {
     const turn = document.querySelector('.turn');
     turn.textContent = (game.getTurn() === 1) ? 'X': 'O';
@@ -277,6 +290,7 @@ function ScreenController() {
     game,
     highlightWinningCells,
     changeTurnMark,
+    highlightOnDraw,
   }
 }
 
