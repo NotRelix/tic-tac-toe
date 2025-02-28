@@ -63,7 +63,7 @@ header {
 .top-bar {
   display: flex;
   flex-direction: column;
-  height: 56px;
+  justify-content: center;
 }
 
 .bottom-bar {
@@ -96,6 +96,12 @@ header {
   display: flex;
   align-items: center;
   gap: 16px;
+  color: #e7ecef;
+}
+
+.winner-text {
+  position: absolute;
+  visibility: hidden;
   color: #e7ecef;
 }
 

@@ -89,6 +89,7 @@ function GameController() {
     if (hasWinner) {
       console.log(`Player ${getTurn()} Won the game!`);
       screen.highlightWinningCells(hasWinner);
+      screen.showWinner(getTurn());
       finishGame();
       return;
     }
@@ -118,6 +119,7 @@ function GameController() {
     turn = 1;
     isGameFinished = 0;
     gameboard.resetBoard();
+    screen.resetTopBar();
   };
 
   return {
@@ -312,6 +314,29 @@ function ScreenController() {
     handleCloseModal();
   }
 
+  const getWinner = (winnerNumber) => {
+    if (winnerNumber === 1) {
+      return game.getPlayerOne();
+    } else {
+      return game.getPlayerTwo();
+    }
+  }
+
+  const gameInfo = document.querySelector('.game-info');
+  const winnerText = document.querySelector('.winner-text');
+
+  const showWinner = (winnerNumber) => {
+    gameInfo.style.visibility = 'hidden';
+    winnerText.style.visibility = 'visible';
+    const winner = getWinner(winnerNumber);
+    winnerText.textContent = `${winner} won!`;
+  }
+
+  const resetTopBar = () => {
+    gameInfo.style.visibility = 'visible';
+    winnerText.style.visibility = 'hidden';
+  }
+
   const resetBtn = document.querySelector(".reset");
   resetBtn.addEventListener("click", handleResetClick);
   
@@ -358,6 +383,8 @@ function ScreenController() {
     highlightWinningCells,
     changeTurnMark,
     highlightOnDraw,
+    showWinner,
+    resetTopBar,
   };
 }
 
