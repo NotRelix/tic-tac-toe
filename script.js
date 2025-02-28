@@ -98,6 +98,7 @@ function GameController() {
     if (isDraw) {
       console.log(`Tie! It's a Draw!`);
       screen.highlightOnDraw();
+      screen.showDraw();
       finishGame();
       return;
     }
@@ -332,6 +333,12 @@ function ScreenController() {
     winnerText.textContent = `${winner} won!`;
   }
 
+  const showDraw = () => {
+    gameInfo.style.visibility = 'hidden';
+    winnerText.style.visibility = 'visible';
+    winnerText.textContent = 'Draw!';
+  }
+
   const resetTopBar = () => {
     gameInfo.style.visibility = 'visible';
     winnerText.style.visibility = 'hidden';
@@ -385,6 +392,7 @@ function ScreenController() {
     highlightOnDraw,
     showWinner,
     resetTopBar,
+    showDraw,
   };
 }
 
