@@ -56,6 +56,8 @@ function Cell() {
 
 function GameController() {
   const gameboard = Gameboard();
+  let playerOne = 'Player 1';
+  let playerTwo = 'Player 2';
 
   gameboard.generateBoard();
 
@@ -102,6 +104,14 @@ function GameController() {
     setNextTurn();
   };
 
+  const getPlayerOne = () => playerOne;
+
+  const getPlayerTwo = () => playerTwo;
+
+  const setPlayerOne = (name) => playerOne = name;
+
+  const setPlayerTwo = (name) => playerTwo = name;
+
   const finishGame = () => (isGameFinished = 1);
 
   const resetGame = () => {
@@ -116,6 +126,10 @@ function GameController() {
     resetGame,
     getTurn,
     setNextTurn,
+    getPlayerOne,
+    getPlayerTwo,
+    setPlayerOne,
+    setPlayerTwo,
   };
 }
 
@@ -286,19 +300,48 @@ function ScreenController() {
     turn.textContent = game.getTurn() === 1 ? "X" : "O";
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    const playerOne = document.querySelector('#player-one').value;
+    const playerTwo = document.querySelector('#player-two').value;
+
+    game.setPlayerOne(playerOne);
+    game.setPlayerTwo(playerTwo);
+
+    handleCloseModal();
+  }
+
   const resetBtn = document.querySelector(".reset");
   resetBtn.addEventListener("click", handleResetClick);
-
+  
+  const profileForm = document.querySelector('.profile-form');
+  profileForm.addEventListener('submit', handleSubmit);
+  
   const iconContainer = document.querySelector(".icon-container");
   const profileModal = document.querySelector(".profile-modal");
   const closeModal = document.querySelector(".close-modal");
   const backdrop = document.querySelector(".backdrop");
+  
+  const handleCloseModal = () => {
+    profileModal.classList.remove("show");
+    profileModal.classList.add("hide");
+    backdrop.classList.remove("show");
+    backdrop.classList.add("hide");
+  
+    profileModal.close();
+  
+    setTimeout(() => {
+      profileModal.style.display = "none";
+      backdrop.classList.remove("hide");
+    }, 200);
+  }
 
   iconContainer.addEventListener("click", () => {
-    backdrop.classList.add("show");
     profileModal.style.display = "flex";
-
+    
     setTimeout(() => {
+      backdrop.classList.add("show");
       profileModal.classList.remove("hide");
       profileModal.classList.add("show");
       profileModal.showModal();
@@ -306,17 +349,7 @@ function ScreenController() {
   });
 
   closeModal.addEventListener("click", () => {
-    profileModal.classList.remove("show");
-    profileModal.classList.add("hide");
-    backdrop.classList.remove("show");
-    backdrop.classList.add("hide");
-
-    profileModal.close();
-
-    setTimeout(() => {
-      profileModal.style.display = "none";
-      backdrop.classList.remove("hide");
-    }, 200);
+    handleCloseModal();
   });
 
   return {
