@@ -163,17 +163,56 @@ header {
   width: 30px;
 }
 
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0);
+  backdrop-filter: blur(0px);
+  visibility: hidden;
+  transition: all 200ms ease-in-out
+}
+
+.backdrop.show {
+  visibility: visible;
+  backdrop-filter: blur(8px);
+}
+
+.backdrop.hide {
+  backdrop-filter: blur(0px);
+}
+
 .profile-modal {
   display: flex;
   flex-direction: column;
+  position: fixed;
   margin: auto;
   padding: 16px;
   width: 400px;
-  height: 300px;
   background-color: #383633;
   border: none;
   border-radius: 8px;
   color: #e7ecef;
+  opacity: 0;
+  transition: all 200ms ease-in-out;
+  backdrop-filter: blur(0px);
+}
+
+.profile-modal.show {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.profile-modal.hide {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.profile-modal::backdrop {
+  backdrop-filter: blur(8px);
+  transition: all 300ms ease-in-out;
 }
 
 .close-modal {
@@ -186,6 +225,7 @@ header {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  padding: 16px 0;
 }
 
 label {
@@ -207,4 +247,9 @@ input {
   font-size: 18px;
   border-radius: 8px;
   border-style: none;
+  transition: 100ms ease-in-out;
+}
+
+.submit-btn:hover {
+  background-color: #474643;
 }

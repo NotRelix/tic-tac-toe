@@ -292,8 +292,32 @@ function ScreenController() {
   const iconContainer = document.querySelector(".icon-container");
   const profileModal = document.querySelector(".profile-modal");
   const closeModal = document.querySelector(".close-modal");
-  iconContainer.addEventListener("click", () => profileModal.showModal());
-  closeModal.addEventListener("click", () => profileModal.close());
+  const backdrop = document.querySelector(".backdrop");
+
+  iconContainer.addEventListener("click", () => {
+    backdrop.classList.add("show");
+    profileModal.style.display = "flex";
+
+    setTimeout(() => {
+      profileModal.classList.remove("hide");
+      profileModal.classList.add("show");
+      profileModal.showModal();
+    }, 50);
+  });
+
+  closeModal.addEventListener("click", () => {
+    profileModal.classList.remove("show");
+    profileModal.classList.add("hide");
+    backdrop.classList.remove("show");
+    backdrop.classList.add("hide");
+
+    profileModal.close();
+
+    setTimeout(() => {
+      profileModal.style.display = "none";
+      backdrop.classList.remove("hide");
+    }, 200);
+  });
 
   return {
     displayGrid,
